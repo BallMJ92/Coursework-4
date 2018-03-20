@@ -1,3 +1,4 @@
+from tkinter import *
 from tkinter import Frame,Canvas  #include more tkinter widgets here
 
 
@@ -8,15 +9,30 @@ from ColourImage import ColourImage
 
 ## GUI for binary image creator
 class BinaryConverter(Frame):
+
     
     CANVAS_SIZE = 500  # Square Region size used to display images
    
     def __init__(self, master=None):
-
+        self.master = Tk("450x450")
+        self.master.title("Binary Image Creator")
+        canvasLeft = Canvas(self.master,bg="white")
+        canvasLeft.pack(side="left", expand=True, fill="both")
+        
+        canvasRight = Canvas(self.master,bg="white")
+        canvasRight.pack(side="right", expand=True, fill="both")
+        
+        
         Frame.__init__(self, master)
+            
+        """vals = GreyScaleImage()._openGreyScaleImage("GreyImage.txt")
+        self._display(canvasRight, vals)"""
+        
         self.grid()  # use the grid manager
 
-        self.master.title("Binary Image Creator")
+        
+
+        
 
         self._imagedata = None     # Store here the loaded Image Data, i.e. an object of class GreyScaleImage or ColourImage. 
 		                           # This will not change until a new data file is loaded. 
@@ -31,7 +47,9 @@ class BinaryConverter(Frame):
               [x,y,v]=pt    # x and y are both integers.
                             # v is a string, which comes from the output of _determineColorValue
               canvas.create_rectangle(s*x, s*y, s*(x+1), s*(y+1), fill=v, width=0)
+
  
   
 if __name__ == "__main__":
+
     BinaryConverter().mainloop()
