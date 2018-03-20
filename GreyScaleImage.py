@@ -4,31 +4,31 @@ from BinaryImage import BinaryImage
 class GreyScaleImage(GUIconnect):
 
    def _openGreyScaleImage(self,filename):
-      values = []
+      inVals = []
+      outVals = []
 
       try:
          with open(filename) as input_file:
             fline = input_file.readline()
             if fline.strip() == "Greyscale Image":
                for line in input_file:
-                  values.append(line.split())
+                  inVals.append(line.split())
          input_file.close()
       except Exception:
          pass
 
-      for i in values[1:200]:
+      for i in inVals:
          x, y, v = i
          x = x.replace(",", "")
          y = y.replace(",", "")
          v = v.replace(",", "")
-         print(self._determineColorValue(int(v)))
-         print(self._imageCoordinates(int(x), int(y)))
+         vals = int(x), int(y), str(self._determineColorValue(int(v)))
+         outVals.append(vals)
+         
+      return outVals   
          
    def _determineColorValue(self,v):
             return ("#%02x%02x%02x" % (v, v, v))
-
-   def _imageCoordinates(self, x, y):
-            return (x, y)
 
    def main(self):
          self._openGreyScaleImage("GreyImage.txt")
