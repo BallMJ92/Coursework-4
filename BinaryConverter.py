@@ -3,7 +3,7 @@ from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror
 from GreyScaleImage import GreyScaleImage
 from ColourImage import ColourImage
-import os
+import os, sys
 
 ## GUI for binary image creator
 class BinaryConverter(Frame):
@@ -38,6 +38,8 @@ class BinaryConverter(Frame):
         fileMenu.add_cascade(label="Open", command=self._openFile)
         # Adding filemenu button to save file with linked with command
         fileMenu.add_cascade(label="Save", command=self._saveFile)
+        # Adding filemenu button to close application
+        fileMenu.add_cascade(label="Close", command=self._closeApplication)
 
         # Initiating label to hold the file path of selected image file
         self.filePath = Label(self.master, text=None)
@@ -107,6 +109,9 @@ class BinaryConverter(Frame):
 
     def _saveFile(self):
         print("Working")
+
+    def _closeApplication(self):
+        self.master.destroy()
   
 if __name__ == "__main__":
     BinaryConverter().mainloop()
