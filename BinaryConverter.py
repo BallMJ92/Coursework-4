@@ -35,11 +35,11 @@ class BinaryConverter(Frame):
         # Initiating cascade feature on menubar
         menubar.add_cascade(label="File", menu=fileMenu)
         # Adding filemenu button to open file with linked with command
-        fileMenu.add_cascade(label="Open", command=self._openFile)
+        fileMenu.add_cascade(label="Open", command=self.openFile)
         # Adding filemenu button to save file with linked with command
-        fileMenu.add_cascade(label="Save", command=self._saveFile)
+        fileMenu.add_cascade(label="Save", command=self.saveFile)
         # Adding filemenu button to close application
-        fileMenu.add_cascade(label="Close", command=self._closeApplication)
+        fileMenu.add_cascade(label="Close", command=self.closeApplication)
 
         # Initiating label to hold the file path of selected image file
         self.filePath = Label(self.master, text=None)
@@ -54,7 +54,7 @@ class BinaryConverter(Frame):
         # Creating text entry box in same column as threshold label
         self.thresholdEntry = Entry(self.master, width=4)
         # Automatically selecting threshold and placing in text entry box
-        self.thresholdEntry.insert(0, "255")
+        self.thresholdEntry.insert(0, "0")
         # Aligning text entry box next to label
         self.thresholdEntry.grid(column=2, row=2, sticky="e", padx=180)
 
@@ -79,7 +79,7 @@ class BinaryConverter(Frame):
                             # v is a string, which comes from the output of _determineColorValue
               canvas.create_rectangle(s*x, s*y, s*(x+1), s*(y+1), fill=v, width=0)
 
-    def _openFile(self):
+    def openFile(self):
         # Open the file dialog to select an image file
         self.file_chosen = askopenfilename()
         "print(self.file_chosen[-4:])"
@@ -109,13 +109,13 @@ class BinaryConverter(Frame):
         else:
             self.filePath.config(text="Unknown file type was selected. Please select txt image.")
 
-    def _saveFile(self):
+    def saveFile(self):
         print("Working")
 
-    def _closeApplication(self):
+    def closeApplication(self):
         self.master.destroy()
 
-    def _processThreshold(self):
+    def processThreshold(self):
         print("Threshold")
   
 if __name__ == "__main__":
