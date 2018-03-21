@@ -1,13 +1,9 @@
 from tkinter import Frame,Canvas, Button, Label, Menu, Entry #include more tkinter widgets here
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror
-import os
-
-
 from GreyScaleImage import GreyScaleImage
 from ColourImage import ColourImage
-
-
+import os
 
 ## GUI for binary image creator
 class BinaryConverter(Frame):
@@ -51,12 +47,16 @@ class BinaryConverter(Frame):
         # Initiating label to display text relating to threshold
         self.thresholdLabel = Label(self.master, text="Select Threshold (0-255)")
         # Aligning label to be above left canvas
-        self.thresholdLabel.grid(column=2, row=2, sticky="w", padx=50)
+        self.thresholdLabel.grid(column=2, row=2, sticky="w", padx=70)
 
+        # Creating text entry box in same column as threshold label
         self.thresholdEntry = Entry(self.master, width=4)
+        # Aligning text entry box next to label
         self.thresholdEntry.grid(column=2, row=2, sticky="e", padx=180)
 
+        # Creating threshold calculate button next to text entry box
         self.thresholdCalculate = Button(self.master, width=6, text="Process")
+        # Aligning button and specifying position next to entry box
         self.thresholdCalculate.grid(column=2, row=2, sticky="e", padx=125)
         
                 
