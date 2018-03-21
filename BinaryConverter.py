@@ -57,8 +57,7 @@ class BinaryConverter(Frame):
         # Creating threshold calculate button next to text entry box
         self.thresholdCalculate = Button(self.master, width=6, text="Process")
         # Aligning button and specifying position next to entry box
-        self.thresholdCalculate.grid(column=2, row=2, sticky="e", padx=125)
-        
+        self.thresholdCalculate.grid(column=2, row=2, sticky="e", padx=125)        
                 
         self._imagedata = None     # Store here the loaded Image Data, i.e. an object of class GreyScaleImage or ColourImage. 
 		                           # This will not change until a new data file is loaded. 
@@ -105,7 +104,6 @@ class BinaryConverter(Frame):
                 self.filePath.config(text="Incorrect filetype was selected. Please select txt image.")
         else:
             self.filePath.config(text="Incorrect filetype was selected. Please select txt image.")
-
 
     def _saveFile(self):
         print("Working")
