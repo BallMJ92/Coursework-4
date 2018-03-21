@@ -53,6 +53,8 @@ class BinaryConverter(Frame):
 
         # Creating text entry box in same column as threshold label
         self.thresholdEntry = Entry(self.master, width=4)
+        # Automatically selecting threshold and placing in text entry box
+        self.thresholdEntry.insert(0, "255")
         # Aligning text entry box next to label
         self.thresholdEntry.grid(column=2, row=2, sticky="e", padx=180)
 
@@ -103,15 +105,18 @@ class BinaryConverter(Frame):
                         self._display(self.canvasLeft, self.vals)
             except Exception:
                 # Updating text on label if file cannot be read
-                self.filePath.config(text="Incorrect filetype was selected. Please select txt image.")
+                self.filePath.config(text="Unknown file type was selected. Please select txt image.")
         else:
-            self.filePath.config(text="Incorrect filetype was selected. Please select txt image.")
+            self.filePath.config(text="Unknown file type was selected. Please select txt image.")
 
     def _saveFile(self):
         print("Working")
 
     def _closeApplication(self):
         self.master.destroy()
+
+    def _processThreshold(self):
+        print("Threshold")
   
 if __name__ == "__main__":
     BinaryConverter().mainloop()
