@@ -1,4 +1,4 @@
-from tkinter import Frame,Canvas, Button, Label, Menu #include more tkinter widgets here
+from tkinter import Frame,Canvas, Button, Label, Menu, Entry #include more tkinter widgets here
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror
 import os
@@ -51,7 +51,14 @@ class BinaryConverter(Frame):
         # Initiating label to display text relating to threshold
         self.thresholdLabel = Label(self.master, text="Select Threshold (0-255)")
         # Aligning label to be above left canvas
-        self.thresholdLabel.grid(column=2, row=2)
+        self.thresholdLabel.grid(column=2, row=2, sticky="w", padx=50)
+
+        self.thresholdEntry = Entry(self.master, width=4)
+        self.thresholdEntry.grid(column=2, row=2, sticky="e", padx=180)
+
+        self.thresholdCalculate = Button(self.master, width=6, text="Process")
+        self.thresholdCalculate.grid(column=2, row=2, sticky="e", padx=125)
+        
                 
         self._imagedata = None     # Store here the loaded Image Data, i.e. an object of class GreyScaleImage or ColourImage. 
 		                           # This will not change until a new data file is loaded. 
