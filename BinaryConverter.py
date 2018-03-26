@@ -100,7 +100,9 @@ class BinaryConverter(Frame):
                         self.greyThreshold = GreyScaleImage()._openGreyScaleImage(self.file_chosen)[1]
                         # Passing Binary and X/Y coordinated to display function
                         self._display(self.canvasLeft, self.vals)
+                        # Clearing the threshold entry box
                         self.thresholdEntry.delete(0, 'end')
+                        # Inserting the system selected threshold into entry box
                         self.thresholdEntry.insert(0, str(self.greyThreshold))
                     elif fline.strip() == "Colour Image":
                         self.canvasLeft.delete("all")
