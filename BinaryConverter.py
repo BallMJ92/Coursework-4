@@ -96,9 +96,12 @@ class BinaryConverter(Frame):
                         # Clearing canvas before displaying image
                         self.canvasLeft.delete("all")
                         # Accessing and passing file location to _openGreyScaleImage 
-                        self.vals = GreyScaleImage()._openGreyScaleImage(self.file_chosen)
+                        self.vals = GreyScaleImage()._openGreyScaleImage(self.file_chosen)[0]
+                        self.greyThreshold = GreyScaleImage()._openGreyScaleImage(self.file_chosen)[1]
                         # Passing Binary and X/Y coordinated to display function
                         self._display(self.canvasLeft, self.vals)
+                        self.thresholdEntry.delete(0, 'end')
+                        self.thresholdEntry.insert(0, str(self.greyThreshold))
                     elif fline.strip() == "Colour Image":
                         self.canvasLeft.delete("all")
                         self.vals = ColourImage()._openColorImage(self.file_chosen)
