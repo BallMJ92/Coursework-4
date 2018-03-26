@@ -3,7 +3,6 @@ from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror
 from GreyScaleImage import GreyScaleImage
 from ColourImage import ColourImage
-import os, sys
 
 ## GUI for binary image creator
 class BinaryConverter(Frame):
