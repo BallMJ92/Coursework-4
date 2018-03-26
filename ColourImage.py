@@ -3,32 +3,45 @@ from BinaryImage import BinaryImage
 
 class ColourImage(GUIconnect):
 
+   def getThreshold(self, t):
+      v = 0
+      for i in t:
+         r, g, b = i
+         v+=int(sum(r, g, b)//3)
+      print(v)
+   
    def _openColorImage(self,filename):
-      values = []
+      inVals = []
+      outVals = []
+      t = []
 
       try:
          with open(filename) as input_file:
             fline = input_file.readline()
             if fline.strip() == "Colour Image":
                for line in input_file:
-                  values.append(line.split())
+                  inVals.append(line.split())
          input_file.close()
       except Exception:
          pass
 
-      for i in values[1:200]:
+      for i in inVals:
          x, y, r, g, b = i
          x = x.replace(",", "")
          y = y.replace(",", "")
          r = r.replace(",", "")
          g = g.replace(",", "")
          b = b.replace(",", "")
-         print(self._determineColorValue(int(r), int(g), int(b)))
-         print(self._imageCoordinates(int(x), int(y)))        
+         vals = int(x), int(y), str(self._determineColorValue(int(r), int(g), int(b)))
+         t.append(int(r))
+         t.append(int(g))
+         t.append(int(g))
+         outVals.append(vals)
 
-   def _imageCoordinates(self, x, y):
-      return (x, y)
-    
+      print(self.getThreshold(t))         
+         
+      return outVals           
+
    def _determineColorValue(self,r,g,b):
         return ("#%02x%02x%02x" % (r,g,b))
 
