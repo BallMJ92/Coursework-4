@@ -3,12 +3,19 @@ from BinaryImage import BinaryImage
 
 class GreyScaleImage(GUIconnect):
 
-   t = 0  
+   def getThreshold(self, t):
+      #super(GreyScaleImage, self).getThreshold()
+      v = 0
+      for i in t:
+         v+=int(i)
+
+      x = int(v//len(t))
+      return x
+   
    def _openGreyScaleImage(self,filename):
-      filetype = "Greyscale Image"
       inVals = []
       outVals = []
-      grey_v = 0
+      t = []
       
       try:
          with open(filename) as input_file:
@@ -25,21 +32,15 @@ class GreyScaleImage(GUIconnect):
          x = x.replace(",", "")
          y = y.replace(",", "")
          v = v.replace(",", "")
-         grey_v += int(v)
          vals = int(x), int(y), str(self._determineColorValue(int(v)))
+         t.append(int(v))
          outVals.append(vals)
 
-      
-      self.value = grey_v//len(inVals)
-
-      return outVals, GUIconnect.getThreshold(self, self.value)   
+      return outVals, self.getThreshold(t)   
          
    def _determineColorValue(self,v):
-      return ("#%02x%02x%02x" % (v, v, v))
-   
-   def threshold(self):
-      return t
-   
+            return ("#%02x%02x%02x" % (v, v, v))
+
    def main(self):
          self._openGreyScaleImage("GreyImage.txt")
 
