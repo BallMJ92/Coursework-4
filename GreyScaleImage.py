@@ -6,10 +6,16 @@ class GreyScaleImage(GUIconnect):
    def getThreshold(self, t):
       #super(GreyScaleImage, self).getThreshold()
       v = 0
+      binaryVals = []
+      
       for i in t:
          v+=int(i)
 
       x = int(v//len(t))
+
+      """for i in t:
+         if i<x:
+            binaryVals.append("""
       return x
    
    def _openGreyScaleImage(self,filename):
@@ -36,7 +42,7 @@ class GreyScaleImage(GUIconnect):
          t.append(int(v))
          outVals.append(vals)
 
-      return outVals, self.getThreshold(t)   
+      return outVals, self.getThreshold(t), t   
          
    def _determineColorValue(self,v):
             return ("#%02x%02x%02x" % (v, v, v))
