@@ -41,3 +41,39 @@ App.frameLeft()
 App.frameRight()
 root.pack_propagate(0)
 root.mainloop()
+
+------------------------------------------------------------------
+"""
+with open("ColourImage.txt", "r") as f:
+    n = f.readlines()
+f.close()
+print(n)
+
+#n = x[2:6]
+#print(n)"""
+
+"""
+x = []
+with open("ColourImage.txt") as input_file:
+    for line in input_file:
+        x.append(line.split()[2:6])
+input_file.close()
+
+print(x[1:200])"""
+
+x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+# replaces every third value
+for index in range(2, len(x), 3):
+    x[index] = "t"
+
+print(x)
+
+# Splits list into sublist of 3 elements
+x = [x[i:i+3] for i in range(0, len(x), 3)]
+print(x)
+
+# printing sublist
+for i in x:
+    print(i)
+
