@@ -58,7 +58,7 @@ class BinaryConverter(Frame):
         self.thresholdEntry.grid(column=2, row=2, sticky="e", padx=180)
 
         # Creating threshold calculate button next to text entry box
-        self.thresholdCalculate = Button(self.master, width=6, text="Process")
+        self.thresholdCalculate = Button(self.master, command = self.processThreshold, width=6, text="Process")
         # Aligning button and specifying position next to entry box
         self.thresholdCalculate.grid(column=2, row=2, sticky="e", padx=125)        
                 
@@ -105,8 +105,11 @@ class BinaryConverter(Frame):
                         self.thresholdEntry.insert(0, str(self.greyThreshold))
                     elif fline.strip() == "Colour Image":
                         self.canvasLeft.delete("all")
-                        self.vals = ColourImage()._openColorImage(self.file_chosen)
+                        self.vals = ColourImage()._openColorImage(self.file_chosen)[0]
+                        self.colourThreshold = ColourImage()._openColorImage(self.file_chosen)[1]
                         self._display(self.canvasLeft, self.vals)
+                        self.thresholdEntry.delete(0, 'end')
+                        self.thresholdEntry.insert(0, str(self.colourThreshold))
             except Exception:
                 # Updating text on label if file cannot be read
                 self.filePath.config(text="Unknown file type was selected. Please select txt image.")
@@ -120,7 +123,7 @@ class BinaryConverter(Frame):
         self.master.destroy()
 
     def processThreshold(self):
-        print("Threshold")
+        print("Works")
   
 if __name__ == "__main__":
     BinaryConverter().mainloop()
