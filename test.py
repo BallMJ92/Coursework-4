@@ -63,6 +63,13 @@ print(x[1:200])"""
 
 x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
+# enumerates over list and replaces all items less than 5
+for n, i in enumerate(x):
+    if i < 5:
+        x[n] = "ERROR"
+
+print(x)
+
 # replaces every third value
 for index in range(2, len(x), 3):
     x[index] = "t"
@@ -76,4 +83,3 @@ print(x)
 # printing sublist
 for i in x:
     print(i)
-
