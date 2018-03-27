@@ -5,10 +5,22 @@ class ColourImage(GUIconnect):
 
    def getThreshold(self, t):
       v = 0
+      binaryVals = []      
+
       for i in t:
-         r, g, b = i
-         v+=int(sum(r, g, b)//3)
-      print(v)
+         v+=i
+
+      # Average of all pixel intensity values
+      tVals = int(v//len(t))
+
+      for i in t:
+         if i<tvals:
+            binaryVals.append(int(1))
+         else:
+            binaryVals.append(int(0))
+
+         
+      return tVals, binaryVals
    
    def _openColorImage(self,filename):
       inVals = []
@@ -38,9 +50,10 @@ class ColourImage(GUIconnect):
          t.append(int(g))
          outVals.append(vals)
 
-      print(self.getThreshold(t))         
+      # Intensity of each pixel
+      pixelAverage = [sum(t[i:i+3])//3 for i in range(0, len(t), 3)]
          
-      return outVals           
+      return outVals, self.getThreshold(pixelAverage), pixelAverage           
 
    def _determineColorValue(self,r,g,b):
         return ("#%02x%02x%02x" % (r,g,b))
