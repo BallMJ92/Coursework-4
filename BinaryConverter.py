@@ -8,6 +8,7 @@ from ColourImage import ColourImage
 class BinaryConverter(Frame):
     
     CANVAS_SIZE = 500  # Square Region size used to display images
+    
    
     def __init__(self, master=None):
 
@@ -82,39 +83,77 @@ class BinaryConverter(Frame):
         # Open the file dialog to select an image file
         self.file_chosen = askopenfilename()
         "print(self.file_chosen[-4:])"
-
-        self.imageData = []
+        self.inVals = []
+        self.typeOfImage = ""
+        self.threshold = []
+        
         
         # Statement to run once open file dialog has finished
         if self.file_chosen[-4:] == ".txt":
+            try:
+                with open(self.file_chosen) as input_file:
+                    fline = input_file.readline()
+                    self.typeOfImage = fline.strip()
+                    for line in input_file:
+                        self.inVals.append(line.split())
+                input_file.close()
+            except Exception:
+                self.filePath.config(text="Unknown file type was selected. Please select txt image.")
+
+        print(self.inVals[0:50])
+        
+        if self.typeOfImage == "Greyscale Image":            
             # Updating label to display file location
             self.filePath.config(text=self.file_chosen)
-            try:
-                with open(self.file_chosen, "r") as file:
-                    fline = file.readline()
-                    # Testing if first line is either Greyscale or colour image
-                    if fline.strip() == "Greyscale Image":
-                        # Clearing canvas before displaying image
-                        self.canvasLeft.delete("all")
-                        # Accessing and passing file location to _openGreyScaleImage 
-                        self.vals = GreyScaleImage().dataForDisplay(self.file_chosen)[0]
-                        self.greyThreshold = GreyScaleImage().dataForDisplay(self.file_chosen)[1]
-                        # Passing Binary and X/Y coordinated to display function
-                        self._display(self.canvasLeft, self.vals)
-                        # Clearing the threshold entry box
-                        self.thresholdEntry.delete(0, 'end')
-                        # Inserting the system selected threshold into entry box
-                        self.thresholdEntry.insert(0, str(self.greyThreshold))
-                    elif fline.strip() == "Colour Image":
-                        self.canvasLeft.delete("all")
-                        self.vals = ColourImage().dataForDisplay(self.file_chosen)[0]
-                        self.colourThreshold = ColourImage().dataForDisplay(self.file_chosen)[1]
-                        self._display(self.canvasLeft, self.vals)
-                        self.thresholdEntry.delete(0, 'end')
-                        self.thresholdEntry.insert(0, str(self.colourThreshold))
-            except Exception:
-                # Updating text on label if file cannot be read
-                self.filePath.config(text="Unknown file type was selected. Please select txt image.")
+            # Testing if first line is either Greyscale or colour image
+            # Clearing canvas before displaying image
+            self.canvasLeft.delete("all")
+            # Accessing and passing file location to _openGreyScaleImage 
+            self.vals = GreyScaleImage().dataForDisplay(self.inVals)
+            # Passing Binary and X/Y coordinated to display function
+            self._display(self.canvasLeft, self.vals)
+            for i in self.inVals:
+                for index in range(2, len(i), 3):
+                    self.threshold.append(i[index])
+            self.threshold = list(map(int, self.threshold))
+            print("----------")
+            print(self.threshold[0:50])
+            print("---------")
+            print(sum(self.threshold))
+            self.greyThreshold = GreyScaleImage().getThreshold(self.threshold)
+            # Clearing the threshold entry box
+            self.thresholdEntry.delete(0, 'end')
+            # Inserting the system selected threshold into entry box
+            self.thresholdEntry.insert(0, str(self.greyThreshold))
+        elif self.typeOfImage == "Colour Image":  
+
+
+            
+            # Updating label to display file location
+            self.filePath.config(text=self.file_chosen)
+            # Testing if first line is either Greyscale or colour image
+            # Clearing canvas before displaying image
+            self.canvasLeft.delete("all")
+            # Accessing and passing file location to _openGreyScaleImage 
+            self.vals = ColourImage().dataForDisplay(self.inVals)
+            # Passing Binary and X/Y coordinated to display function
+            self._display(self.canvasLeft, self.vals)
+            print("-----------")
+             
+            for i in self.inVals:
+                for index in range(2, 5):
+                    self.threshold.append(i[index])
+            self.threshold = [self.threshold[i:i+3] for i in range(0, len(self.threshold), 3)]
+            
+            print(self.threshold[0:50])
+
+            pixelAverage = []
+            for x in self.threshold:
+                pixelAverage.append(sum(int(x))//len(int(x)))
+            print("------")
+            print(pixelAverage[0:20])
+            
+        
         else:
             self.filePath.config(text="Unknown file type was selected. Please select txt image.")
 
@@ -124,8 +163,10 @@ class BinaryConverter(Frame):
     def closeApplication(self):
         self.master.destroy()
 
-    def processThreshold(self, ):
-        print("Works")
+    def processThreshold(self):
+        self.canvasRight.delete("all")
+        self.binaryOutput = GreyScaleImage().binariseImage(self.inVals, self.thresholdEntry.get())
+        self._display(self.canvasRight, self.binaryOutput)
   
 if __name__ == "__main__":
     BinaryConverter().mainloop()
