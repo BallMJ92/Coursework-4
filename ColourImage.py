@@ -3,6 +3,7 @@ from BinaryImage import BinaryImage
 
 class ColourImage(GUIconnect):
 
+
    def getThreshold(self, t):
       v = 0           
 
@@ -18,7 +19,7 @@ class ColourImage(GUIconnect):
    def binariseImage(self, threshold):
       binaryVals = []
       
-      for i in t:
+      for i in threshold:
          if i<tVals:
             binaryVals.append(int(1))
          else:
@@ -26,22 +27,10 @@ class ColourImage(GUIconnect):
 
       return binaryVals
    
-   def dataForDisplay(self, filename):
-      inVals = []
+   def dataForDisplay(self, data):
       outVals = []
-      t = []
 
-      try:
-         with open(filename) as input_file:
-            fline = input_file.readline()
-            if fline.strip() == "Colour Image":
-               for line in input_file:
-                  inVals.append(line.split())
-         input_file.close()
-      except Exception:
-         pass
-
-      for i in inVals:
+      for i in data:
          x, y, r, g, b = i
          x = x.replace(",", "")
          y = y.replace(",", "")
@@ -49,15 +38,12 @@ class ColourImage(GUIconnect):
          g = g.replace(",", "")
          b = b.replace(",", "")
          vals = int(x), int(y), str(self._determineColorValue(int(r), int(g), int(b)))
-         t.append(int(r))
-         t.append(int(g))
-         t.append(int(g))
          outVals.append(vals)
 
       # Intensity of each pixel
-      pixelAverage = [sum(t[i:i+3])//3 for i in range(0, len(t), 3)]
+
          
-      return outVals, self.getThreshold(pixelAverage)           
+      return outVals
 
    def _determineColorValue(self,r,g,b):
         return ("#%02x%02x%02x" % (r,g,b))
