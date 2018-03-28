@@ -82,6 +82,8 @@ class BinaryConverter(Frame):
         # Open the file dialog to select an image file
         self.file_chosen = askopenfilename()
         "print(self.file_chosen[-4:])"
+
+        self.imageData = []
         
         # Statement to run once open file dialog has finished
         if self.file_chosen[-4:] == ".txt":
@@ -95,8 +97,8 @@ class BinaryConverter(Frame):
                         # Clearing canvas before displaying image
                         self.canvasLeft.delete("all")
                         # Accessing and passing file location to _openGreyScaleImage 
-                        self.vals = GreyScaleImage()._openGreyScaleImage(self.file_chosen)[0]
-                        self.greyThreshold = GreyScaleImage()._openGreyScaleImage(self.file_chosen)[1]
+                        self.vals = GreyScaleImage().dataForDisplay(self.file_chosen)[0]
+                        self.greyThreshold = GreyScaleImage().dataForDisplay(self.file_chosen)[1]
                         # Passing Binary and X/Y coordinated to display function
                         self._display(self.canvasLeft, self.vals)
                         # Clearing the threshold entry box
@@ -105,8 +107,8 @@ class BinaryConverter(Frame):
                         self.thresholdEntry.insert(0, str(self.greyThreshold))
                     elif fline.strip() == "Colour Image":
                         self.canvasLeft.delete("all")
-                        self.vals = ColourImage()._openColorImage(self.file_chosen)[0]
-                        self.colourThreshold = ColourImage()._openColorImage(self.file_chosen)[1]
+                        self.vals = ColourImage().dataForDisplay(self.file_chosen)[0]
+                        self.colourThreshold = ColourImage().dataForDisplay(self.file_chosen)[1]
                         self._display(self.canvasLeft, self.vals)
                         self.thresholdEntry.delete(0, 'end')
                         self.thresholdEntry.insert(0, str(self.colourThreshold))
@@ -122,7 +124,7 @@ class BinaryConverter(Frame):
     def closeApplication(self):
         self.master.destroy()
 
-    def processThreshold(self):
+    def processThreshold(self, ):
         print("Works")
   
 if __name__ == "__main__":
