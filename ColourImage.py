@@ -4,8 +4,7 @@ from BinaryImage import BinaryImage
 class ColourImage(GUIconnect):
 
    def getThreshold(self, t):
-      v = 0
-      binaryVals = []      
+      v = 0           
 
       for i in t:
          v+=i
@@ -13,16 +12,21 @@ class ColourImage(GUIconnect):
       # Average of all pixel intensity values
       tVals = int(v//len(t))
 
+         
+      return tVals
+
+   def binariseImage(self, threshold):
+      binaryVals = []
+      
       for i in t:
-         if i<tvals:
+         if i<tVals:
             binaryVals.append(int(1))
          else:
             binaryVals.append(int(0))
 
-         
-      return tVals, binaryVals
+      return binaryVals
    
-   def _openColorImage(self,filename):
+   def dataForDisplay(self, filename):
       inVals = []
       outVals = []
       t = []
@@ -53,14 +57,14 @@ class ColourImage(GUIconnect):
       # Intensity of each pixel
       pixelAverage = [sum(t[i:i+3])//3 for i in range(0, len(t), 3)]
          
-      return outVals, self.getThreshold(pixelAverage), pixelAverage           
+      return outVals, self.getThreshold(pixelAverage)           
 
    def _determineColorValue(self,r,g,b):
         return ("#%02x%02x%02x" % (r,g,b))
 
 
    def main(self):
-      self._openColorImage("ColourImage.txt")
+      print(self.dataForDisplay("ColourImage.txt")[0])
 
 if __name__ == "__main__":
    c = ColourImage()
