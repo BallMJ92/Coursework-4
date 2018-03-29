@@ -1,8 +1,9 @@
 from tkinter import Frame,Canvas, Button, Label, Menu, Entry #include more tkinter widgets here
-from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showerror
 from GreyScaleImage import GreyScaleImage
 from ColourImage import ColourImage
+
 
 ## GUI for binary image creator
 class BinaryConverter(Frame):
@@ -111,12 +112,17 @@ class BinaryConverter(Frame):
             self.canvasRight.delete("all")
             # Accessing and passing file location to _openGreyScaleImage 
             self.vals = GreyScaleImage().dataForDisplay(self.inVals)
-            # Passing Binary and X/Y coordinated to display function
+            # passing vals to display image on left canvas
             self._display(self.canvasLeft, self.vals)
+
+            # Extracting intensity values from each sublist and adding to threshold list
             for i in self.inVals:
                 for index in range(2, len(i), 3):
                     self.threshold.append(i[index])
+
+            # Converting threshold list elements to ints
             self.threshold = list(map(int, self.threshold))
+            # Getting average threshold across image and adding value to greyThreshold variable
             self.greyThreshold = GreyScaleImage().getThreshold(self.threshold)
             # Clearing the threshold entry box
             self.thresholdEntry.delete(0, 'end')
@@ -129,8 +135,11 @@ class BinaryConverter(Frame):
             self.canvasRight.delete("all")
             self.vals = ColourImage().dataForDisplay(self.inVals)
             self._display(self.canvasLeft, self.vals)
+            # Stripping commas from sublist
             self.inVals = [[x.strip(",") for x in group] for group in self.inVals]
+            # Converting all elements in sublist to ints
             self.inVals = [[int(x) for x in group] for group in self.inVals]
+            # Getting mean of each sublist
             self.threshold = [int(round(sum(x)/len(x))) for x in self.inVals]
             self.colourThreshold = ColourImage().getThreshold(self.threshold)
             # Clearing the threshold entry box
@@ -141,23 +150,40 @@ class BinaryConverter(Frame):
             self.filePath.config(text="Unknown file type was selected. Please select txt image.")
 
     def saveFile(self):
-        print("Working")
+        file = asksaveasfile(mode='w', defaultextension=".txt")
+        if file is None: # asksaveasfile return `None` if dialog closed with "cancel".
+            return
+
+        x = [[2, 3, 4],[5, 6, 7],[8, 9, 10]]
+        file.write("Binary Image"+"\n")
+        for i in x:
+            text = str()
+            for n in i:
+                text += str(n)+", "
+            file.write(text[:-2]+"\n")
+        file.close()
 
     def closeApplication(self):
         self.master.destroy()
 
     def processThreshold(self):
-        
+        # Clearing right canvas before processing image
         self.canvasRight.delete("all")
+
+        # Testing if entry in threshold entry box is digit
         if self.thresholdEntry.get().isdigit():
             self.filePath.config(text=self.file_chosen)
+            # Testing image type
             if self.typeOfImage == "Greyscale Image":
+                # Binarising image and giving output for display to binaryOutput variable
                 self.binaryOutput = GreyScaleImage().binariseImage(self.inVals, self.thresholdEntry.get())
+                # Passing binaryOutput variable to display function in order to display on right canvas
                 self._display(self.canvasRight, self.binaryOutput)
             elif self.typeOfImage == "Colour Image":
                 self.binaryOutput = ColourImage().binariseImage(self.inVals, self.thresholdEntry.get())
                 self._display(self.canvasRight, self.binaryOutput)
         else:
+            # Returning error message to user on label if entry box does not contain only digits
             self.filePath.config(text="Please input digits")
   
 if __name__ == "__main__":
