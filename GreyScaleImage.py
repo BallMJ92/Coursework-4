@@ -50,12 +50,4 @@ class GreyScaleImage(GUIconnect):
    def _determineColorValue(self,v):
        return ("#%02x%02x%02x" % (v, v, v))
 
-"""   def main(self):
-         print(self.dataForDisplay("GreyImage.txt")[0])
 
-
-if __name__ == "__main__":
-   c = GreyScaleImage()
-   c.main()"""
-
-        
