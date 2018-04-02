@@ -26,7 +26,7 @@ class GreyScaleImage(GUIconnect):
             v = 1
          else:
             pass
-         vals = int(x), int(y), BinaryImage()._determineColorValue(int(v))
+         vals = int(x), int(y), int(v)
          binaryVals.append(vals)
       
       return binaryVals
@@ -49,5 +49,4 @@ class GreyScaleImage(GUIconnect):
          
    def _determineColorValue(self,v):
        return ("#%02x%02x%02x" % (v, v, v))
-
 
