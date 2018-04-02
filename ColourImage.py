@@ -17,15 +17,17 @@ class ColourImage(GUIconnect):
       
       for i in data:
          x, y, r, g, b = i
-         sumIntensity = r, g, b
-         if int(round(sum(sumIntensity)/3)) < threshold:
+         sumIntensity = (int(r)+int(g)+int(b))//3
+         if sumIntensity < threshold:
             v = 0
-         elif int(round(sum(sumIntensity)/3)) >= threshold:
+         elif sumIntensity >= threshold:
             v = 1
          else:
             pass
-         vals = x, y, BinaryImage()._determineColorValue(v)
+         vals = int(x), int(y), int(v)
          binaryVals.append(vals)
+
+      print(sumIntensity)
       
       return binaryVals
    
