@@ -81,7 +81,7 @@ class BinaryConverter(Frame):
     def openFile(self):
         # Open the file dialog to select an image file
         self.file_chosen = askopenfilename()
-        self.inVals = []
+        self._imagedata = []
         self.typeOfImage = ""
         self.threshold = []
 
@@ -96,7 +96,7 @@ class BinaryConverter(Frame):
                     fline = input_file.readline()
                     self.typeOfImage = fline.strip()
                     for line in input_file:
-                        self.inVals.append(line.split())
+                        self._imagedata.append(line.split())
                 input_file.close()
             except Exception:
                 self.filePath.config(text="Unknown file type was selected. Please select txt image.")
@@ -109,12 +109,12 @@ class BinaryConverter(Frame):
             self.canvasLeft.delete("all")
             self.canvasRight.delete("all")
             # Accessing and passing file location to _openGreyScaleImage 
-            self.vals = GreyScaleImage().dataForDisplay(self.inVals)
+            self.vals = GreyScaleImage().dataForDisplay(self._imagedata)
             # passing vals to display image on left canvas
             self._display(self.canvasLeft, self.vals)
 
             # Extracting intensity values from each sublist and adding to threshold list
-            for i in self.inVals:
+            for i in self._imagedata:
                 for index in range(2, len(i), 3):
                     self.threshold.append(i[index])
 
@@ -131,12 +131,12 @@ class BinaryConverter(Frame):
             # Clearing both left and right canvas before displaying image
             self.canvasLeft.delete("all")
             self.canvasRight.delete("all")
-            self.vals = ColourImage().dataForDisplay(self.inVals)
+            self.vals = ColourImage().dataForDisplay(self._imagedata)
             self._display(self.canvasLeft, self.vals)
             # Stripping commas from sublist
-            self.inVals = [[x.strip(",") for x in group] for group in self.inVals]
+            self._imagedata = [[x.strip(",") for x in group] for group in self._imagedata]
             # Converting all elements in sublist to ints
-            self.meanIntensity = [[int(x) for x in group[2:]] for group in self.inVals]
+            self.meanIntensity = [[int(x) for x in group[2:]] for group in self._imagedata]
             # Getting mean of each sublist
             self.meanIntensity = [int(sum(x)//len(x)) for x in self.meanIntensity]
             #print(self.threshold)
@@ -154,8 +154,7 @@ class BinaryConverter(Frame):
 
         # Handling output when 'Cancel' is selected in save file dialog
         if not file:
-            return
-            
+            return            
         try:
             file.write("Binary Image"+"\n")
             for i in self.binaryOutput:
@@ -167,10 +166,10 @@ class BinaryConverter(Frame):
             self.filePath.config(text="File saved successfully")
             
             # Resetting GUI to defaults so another file can be read in
-            self.canvasLeft.delete("all")
+            """self.canvasLeft.delete("all")
             self.canvasRight.delete("all")
             self.thresholdEntry.delete(0, 'end')
-            self.thresholdEntry.insert(0, "0")
+            self.thresholdEntry.insert(0, "0")"""
             
         except AttributeError:
             self.filePath.config(text="Please process image before saving to file")
@@ -191,15 +190,15 @@ class BinaryConverter(Frame):
                     # Testing image type
                     if self.typeOfImage == "Greyscale Image":
                         # Binarising image and giving output for display to binaryOutput variable.
-                        self.binaryOutput = GreyScaleImage().binariseImage(self.inVals, self.thresholdEntry.get())
+                        self.binaryOutput = GreyScaleImage().binariseImage(self._imagedata, self.thresholdEntry.get())
                         # Passing binaryOutput variable to BinaryImage class to determine each pixel colour
-                        self.binaryImageDisplay = BinaryImage().determinePixelValue(self.binaryOutput)
+                        self._processedData = BinaryImage().determinePixelValue(self.binaryOutput)
                         # Passing binaryImageDisplay variable to display function in order to display on right canvas
-                        self._display(self.canvasRight, self.binaryImageDisplay)
+                        self._display(self.canvasRight, self._processedData)
                     elif self.typeOfImage == "Colour Image":
-                        self.binaryOutput = ColourImage().binariseImage(self.inVals, self.thresholdEntry.get())
-                        self.binaryImageDisplay = BinaryImage().determinePixelValue(self.binaryOutput)
-                        self._display(self.canvasRight, self.binaryImageDisplay)
+                        self.binaryOutput = ColourImage().binariseImage(self._imagedata, self.thresholdEntry.get())
+                        self._processedData = BinaryImage().determinePixelValue(self.binaryOutput)
+                        self._display(self.canvasRight, self._processedData)
                 else:
                     self.filePath.config(text="Please input digits between 0 and 255")
             else:
