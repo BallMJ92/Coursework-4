@@ -70,8 +70,6 @@ class BinaryConverter(Frame):
         self._processedData = None # Store here a BinaryImage object that is the result of binarising the loaded data.
         self._pixelSize = 2        # This is used to size the pixels in our display. See method _display()
 
-        """self.vals = GreyScaleImage()._openGreyScaleImage("GreyImage.txt")
-        self._display(self.canvasLeft, vals)"""
         self.master.configure(menu=menubar)
 
     def _display(self, canvas, inputPts): 
@@ -84,11 +82,13 @@ class BinaryConverter(Frame):
     def openFile(self):
         # Open the file dialog to select an image file
         self.file_chosen = askopenfilename()
-        "print(self.file_chosen[-4:])"
         self.inVals = []
         self.typeOfImage = ""
         self.threshold = []
-        
+
+        # Handling output when 'Cancel' is selected in open file dialog
+        if not self.file_chosen:
+            return
         
         # Statement to run once open file dialog has finished
         if self.file_chosen[-4:] == ".txt":
@@ -152,7 +152,9 @@ class BinaryConverter(Frame):
     def saveFile(self):
         self.filePath.config(text=self.file_chosen)
         file = asksaveasfile(mode='w', defaultextension=".txt")
-        if file is None: # asksaveasfile return `None` if dialog closed with "cancel".
+
+        # Handling output when 'Cancel' is selected in save file dialog
+        if not file:
             return
             
         try:
@@ -160,8 +162,8 @@ class BinaryConverter(Frame):
             for i in self.binaryOutput:
                 text = str()
                 for n in i:
-                    text += str(n)+", "
-                file.write(text[:-2]+"\n")
+                    text += str(n)+","
+                file.write(text[:-1]+"\n")
             file.close()
         except AttributeError:
             self.filePath.config(text="Please process image before saving to file")
@@ -172,25 +174,32 @@ class BinaryConverter(Frame):
     def processThreshold(self):
         # Clearing right canvas before processing image
         self.canvasRight.delete("all")
-
+        processValue = self.thresholdEntry.get()
+            
         # Testing if entry in threshold entry box is digit
-        if self.thresholdEntry.get().isdigit():
-            self.filePath.config(text=self.file_chosen)
-            # Testing image type
-            if self.typeOfImage == "Greyscale Image":
-                # Binarising image and giving output for display to binaryOutput variable.
-                self.binaryOutput = GreyScaleImage().binariseImage(self.inVals, self.thresholdEntry.get())
-                # Passing binaryOutput variable to BinaryImage class to determine each pixel colour
-                self.binaryImageDisplay = BinaryImage().determinePixelValue(self.binaryOutput)
-                # Passing binaryImageDisplay variable to display function in order to display on right canvas
-                self._display(self.canvasRight, self.binaryImageDisplay)
-            elif self.typeOfImage == "Colour Image":
-                self.binaryOutput = ColourImage().binariseImage(self.inVals, self.thresholdEntry.get())
-                self.binaryImageDisplay = BinaryImage().determinePixelValue(self.binaryOutput)
-                self._display(self.canvasRight, self.binaryImageDisplay)
-        else:
-            # Returning error message to user on label if entry box does not contain only digits
-            self.filePath.config(text="Please input digits")
+        try:
+            if processValue.isdigit():
+                if 0 <= int(processValue) <= 255:
+                    self.filePath.config(text=self.file_chosen)
+                    # Testing image type
+                    if self.typeOfImage == "Greyscale Image":
+                        # Binarising image and giving output for display to binaryOutput variable.
+                        self.binaryOutput = GreyScaleImage().binariseImage(self.inVals, self.thresholdEntry.get())
+                        # Passing binaryOutput variable to BinaryImage class to determine each pixel colour
+                        self.binaryImageDisplay = BinaryImage().determinePixelValue(self.binaryOutput)
+                        # Passing binaryImageDisplay variable to display function in order to display on right canvas
+                        self._display(self.canvasRight, self.binaryImageDisplay)
+                    elif self.typeOfImage == "Colour Image":
+                        self.binaryOutput = ColourImage().binariseImage(self.inVals, self.thresholdEntry.get())
+                        self.binaryImageDisplay = BinaryImage().determinePixelValue(self.binaryOutput)
+                        self._display(self.canvasRight, self.binaryImageDisplay)
+                else:
+                    self.filePath.config(text="Please input digits between 0 and 255")
+            else:
+                # Returning error message to user on label if entry box does not contain only digits
+                self.filePath.config(text="Please input digits")
+        except AttributeError:
+            self.filePath.config(text="Please open image before processing")
   
 if __name__ == "__main__":
     BinaryConverter().mainloop()
