@@ -5,7 +5,6 @@ from GreyScaleImage import GreyScaleImage
 from ColourImage import ColourImage
 from BinaryImage import BinaryImage
 
-
 ## GUI for binary image creator
 class BinaryConverter(Frame):
     
@@ -165,6 +164,14 @@ class BinaryConverter(Frame):
                     text += str(n)+","
                 file.write(text[:-1]+"\n")
             file.close()
+            self.filePath.config(text="File saved successfully")
+            
+            # Resetting GUI to defaults so another file can be read in
+            self.canvasLeft.delete("all")
+            self.canvasRight.delete("all")
+            self.thresholdEntry.delete(0, 'end')
+            self.thresholdEntry.insert(0, "0")
+            
         except AttributeError:
             self.filePath.config(text="Please process image before saving to file")
 
