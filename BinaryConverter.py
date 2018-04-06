@@ -1,5 +1,4 @@
 # Matthew Ball MSc Information Technology 04/04/2018
-
 from tkinter import Frame,Canvas, Button, Label, Menu, Entry #include more tkinter widgets here
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showerror
@@ -9,21 +8,25 @@ from BinaryImage import BinaryImage
 
 ## GUI for binary image creator
 class BinaryConverter(Frame):
-    
-    CANVAS_SIZE = 500  # Square Region size used to display images
-    
+
+    global CANVAS_SIZE
+    CANVAS_SIZE = 500  # Square Region size used to display images    
    
     def __init__(self, master=None):
 
         Frame.__init__(self, master)
-
+	
+	# Initialising width and height variables of left and right canvas
+        w = CANVAS_SIZE
+        h = CANVAS_SIZE
+        
         # Creating left canvas
-        self.canvasLeft = Canvas(width=500, height=500, bg="white")
+        self.canvasLeft = Canvas(width=w, height=h, bg="white", bd=0)
         # Aligning left canvas
         self.canvasLeft.grid(column=1, row=3)
 
         # Creating right canvas
-        self.canvasRight = Canvas(width=500, height=500, bg="white")
+        self.canvasRight = Canvas(width=w, height=h, bg="white", bd=0)
         # Aligning right canvas
         self.canvasRight.grid(column=2, row=3)
         
@@ -45,7 +48,7 @@ class BinaryConverter(Frame):
         fileMenu.add_cascade(label="Close", command=self.closeApplication)
 
         # Initiating label to hold the file path of selected image file
-        self.filePath = Label(self.master, text=None)
+        self.filePath = Label(self.master, text=None, width=70, anchor="w")
         # Aligning label to be above left canvas
         self.filePath.grid(column=1, row=2)
 
@@ -82,13 +85,13 @@ class BinaryConverter(Frame):
 
     def openFile(self):
         # Open the file dialog to select an image file
-        self.file_chosen = askopenfilename()
+        self.fileChosen = askopenfilename()
         self._imagedata = []
         self.typeOfImage = ""
         self.meanIntensity = []
 
         # Handling output when 'Cancel' is selected in open file dialog
-        if not self.file_chosen:
+        if not self.fileChosen:
             self.filePath.config(text="Please select a file")
             self.canvasLeft.delete("all")
             self.canvasRight.delete("all")
@@ -96,21 +99,22 @@ class BinaryConverter(Frame):
             self.thresholdEntry.insert(0, "0")
         
         # Statement to run once open file dialog has finished
-        if self.file_chosen[-4:] == ".txt":
+        if self.fileChosen[-4:] == ".txt":
             try:
-                with open(self.file_chosen) as input_file:
+                with open(self.fileChosen) as input_file:
                     fline = input_file.readline()
                     self.typeOfImage = fline.strip()
                     for line in input_file:
                         self._imagedata.append(line.split())
                 input_file.close()
             except Exception:
-                self.filePath.config(text="Unknown file type was selected. Please select txt image.")
-        
+                self.filePath.config(text="Unknown file type selected. Please open txt image.")
+                
         try:
-            if self.typeOfImage == "Greyscale Image":            
+            if self.typeOfImage == "Greyscale Image":
+                self.binaryOutput = None
                 # Updating label to display file location
-                self.filePath.config(text=self.file_chosen)
+                self.filePath.config(text=self.fileChosen)
                 # Testing if first line is either Greyscale or colour image
                 # Clearing canvas before displaying image
                 self.canvasLeft.delete("all")
@@ -133,8 +137,9 @@ class BinaryConverter(Frame):
                 self.thresholdEntry.delete(0, 'end')
                 # Inserting the system selected threshold into entry box
                 self.thresholdEntry.insert(0, str(self.greyThreshold))
-            elif self.typeOfImage == "Colour Image":              
-                self.filePath.config(text=self.file_chosen)
+            elif self.typeOfImage == "Colour Image":
+                self.binaryOutput = None
+                self.filePath.config(text=self.fileChosen)
                 # Clearing both left and right canvas before displaying image
                 self.canvasLeft.delete("all")
                 self.canvasRight.delete("all")
@@ -152,34 +157,33 @@ class BinaryConverter(Frame):
                 # Inserting the system selected threshold into entry box
                 self.thresholdEntry.insert(0, str(self.colourThreshold))       
             else:
-                self.filePath.config(text="Unknown file type was selected. Please select txt image.")
+                self.filePath.config(text="Unknown file type selected. Please open txt image.")
         except ValueError:
             self.filePath.config(text="Unable to read data in file.")
         except Exception:
-            self.filePath.config(text="Unknown file type was selected. Please select txt image.")
+            self.filePath.config(text="Unknown file type selected. Please open txt image.")
 
     def saveFile(self):
-        self.filePath.config(text=self.file_chosen)
-        file = asksaveasfile(mode='w', defaultextension=".txt")
-
-        # Handling output when 'Cancel' is selected in save file dialog
-        if not self.file_chosen:
-            self.filePath.config(text="Please select a file.")
-            self.canvasLeft.delete("all")
-            self.canvasRight.delete("all")
-            self.thresholdEntry.delete(0, 'end')
-            self.thresholdEntry.insert(0, "0")
 
         # Handling if user saves file before opening and processing
         try:
             if not self.binaryOutput:
-                self.filePath.config(text="Please open and process file before saving.")
-                self.canvasLeft.delete("all")
-                self.canvasRight.delete("all")
-                self.thresholdEntry.delete(0, 'end')
-                self.thresholdEntry.insert(0, "0")
+                self.filePath.config(text="Please process file before saving.")
+                return
         except AttributeError:
-            return
+            self.filePath.config(text="Please open and process file before saving.")
+            return        
+
+        # Handling output when 'Cancel' is selected in save file dialog
+        if not self.fileChosen:
+            self.filePath.config(text="File not saved.")
+            
+        try:
+            self.filePath.config(text=self.fileChosen)
+            file = asksaveasfile(mode='w', defaultextension=".txt")
+        except Exception:
+            self.filePath.config(text="Please open and process file before saving.")    
+            return   
             
         try:
             file.write("Binary Image"+"\n")
@@ -205,7 +209,7 @@ class BinaryConverter(Frame):
         try:
             if processValue.isdigit():
                 if 0 <= int(processValue) <= 255:
-                    self.filePath.config(text=self.file_chosen)
+                    self.filePath.config(text=self.fileChosen)
                     # Testing image type
                     if self.typeOfImage == "Greyscale Image":
                         # Binarising image and giving output for display to binaryOutput variable.
