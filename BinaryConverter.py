@@ -48,7 +48,7 @@ class BinaryConverter(Frame):
         fileMenu.add_cascade(label="Close", command=self.closeApplication)
 
         # Initiating label to hold the file path of selected image file
-        self.filePath = Label(self.master, text=None, width=70, anchor="w")
+        self.filePath = Label(self.master, text=None, width=70)
         # Aligning label to be above left canvas
         self.filePath.grid(column=1, row=2)
 
@@ -83,6 +83,7 @@ class BinaryConverter(Frame):
                             # v is a string, which comes from the output of _determineColorValue
               canvas.create_rectangle(s*x, s*y, s*(x+1), s*(y+1), fill=v, width=0)
 
+    # Function to be called when open menu button event activated
     def openFile(self):
         # Open the file dialog to select an image file
         self.fileChosen = askopenfilename()
@@ -163,8 +164,8 @@ class BinaryConverter(Frame):
         except Exception:
             self.filePath.config(text="Unknown file type selected. Please open txt image.")
 
+    # Function to be called when save menu button event activated
     def saveFile(self):
-
         # Handling if user saves file before opening and processing
         try:
             if not self.binaryOutput:
@@ -197,9 +198,11 @@ class BinaryConverter(Frame):
         except AttributeError:
             self.filePath.config(text="Please process image before saving to file.")
 
+    # Function to be called when close menu button event activated
     def closeApplication(self):
         self.master.destroy()
 
+    # Function to be called when process threshold button event activated
     def processThreshold(self):
         # Clearing right canvas before processing image
         self.canvasRight.delete("all")
