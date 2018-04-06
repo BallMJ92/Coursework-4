@@ -166,6 +166,9 @@ class BinaryConverter(Frame):
 
     # Function to be called when save menu button event activated
     def saveFile(self):
+        # Defining filetypes for user to save file as
+        filetypeChoices = [('Text file', '*.txt')]
+        
         # Handling if user saves file before opening and processing
         try:
             if not self.binaryOutput:
@@ -181,7 +184,7 @@ class BinaryConverter(Frame):
             
         try:
             self.filePath.config(text=self.fileChosen)
-            file = asksaveasfile(mode='w', defaultextension=".txt")
+            file = asksaveasfile(mode='w', defaultextension=".txt", filetypes=filetypeChoices)
         except Exception:
             self.filePath.config(text="Please open and process file before saving.")    
             return   
