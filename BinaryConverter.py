@@ -110,8 +110,13 @@ class BinaryConverter(Frame):
                 input_file.close()
             except Exception:
                 self.filePath.config(text="Unknown file type selected. Please open txt image.")
+                self.canvasLeft.delete("all")
+                self.canvasRight.delete("all")
+                self.thresholdEntry.delete(0, 'end')
+                self.thresholdEntry.insert(0, "0")
                 
         try:
+            # Checking image type
             if self.typeOfImage == "Greyscale Image":
                 self.binaryOutput = None
                 # Updating label to display file location
@@ -159,11 +164,26 @@ class BinaryConverter(Frame):
                 self.thresholdEntry.insert(0, str(self.colourThreshold))       
             else:
                 self.filePath.config(text="Unknown file type selected. Please open txt image.")
+                self.canvasLeft.delete("all")
+                self.canvasRight.delete("all")
+                self.thresholdEntry.delete(0, 'end')
+                self.thresholdEntry.insert(0, "0")
+        # Catching exception errors and resetting canvases and labels to default values
         except ValueError:
             self.filePath.config(text="Unable to read data in file.")
+            self.canvasLeft.delete("all")
+            self.canvasRight.delete("all")
+            self.thresholdEntry.delete(0, 'end')
+            self.thresholdEntry.insert(0, "0")
         except Exception:
             self.filePath.config(text="Unknown file type selected. Please open txt image.")
+            self.canvasLeft.delete("all")
+            self.canvasRight.delete("all")
+            self.thresholdEntry.delete(0, 'end')
+            self.thresholdEntry.insert(0, "0")
 
+
+            
     # Function to be called when save menu button event activated
     def saveFile(self):
         # Defining filetypes for user to save file as
